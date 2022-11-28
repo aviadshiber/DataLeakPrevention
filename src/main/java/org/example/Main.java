@@ -7,12 +7,14 @@ import org.example.apis.RulesClassLoader;
 import org.example.rules.RuleEvaluator;
 import org.example.rules.RuleJsonReader;
 import org.example.rules.RulesImplLoader;
+import org.example.view.CommandLineView;
 import org.example.rules.utils.FileHelper;
 
 import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 import static org.example.rules.utils.WebHelper.downloadFile;
@@ -28,27 +30,28 @@ public class Main {
     private static final Writer writer = new PrintWriter(System.out);
     private static final RuleReader ruleReader = new RuleJsonReader();
     private static final RulesClassLoader classLoader = new RulesImplLoader();
-    private static final String POLICY_CONFIG_FILE = "policy.json";
-
-    //private static final String FILE_TO_SCAN = "ssn-example.csv";
-    private static final String FILE_TO_SCAN_URL = "https://www.protecto.ai/wp-content/uploads/2020/08/Book1.xlsx-us-social-security-22-cvs.csv";
-
+    private static final String DEFAULT_POLICY_CONFIG_FILE = "policy.json";
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        //TODO: add Command line view and load paths from args
+        val cmd = new CommandLineView(args);
+        val configFilePath = cmd.getConfigPath().map(Paths::get).orElse(defaultConfigPath());
+        val urlToDownload = cmd.getUrl();
         //init all resources needed
         val dataTempPath = Files.createTempFile(null, "_downloaded_data");
         val dataTempFile = dataTempPath.toFile();
-        val configFilePath = Path.of(Objects.requireNonNull(Main.class.getClassLoader().getResource(POLICY_CONFIG_FILE)).toURI());
         val configReader = FileHelper.readFile(configFilePath);
 
         //val dataPath = Path.of(Objects.requireNonNull(Main.class.getClassLoader().getResource(FILE_TO_SCAN)).toURI());
-        downloadFile(FILE_TO_SCAN_URL, dataTempFile);
+        downloadFile(urlToDownload, dataTempFile);
         @Cleanup val dataReader = FileHelper.readFile(dataTempPath);
 
 
         val app = new DataLossPreventionApp(configReader, dataReader, ruleReader, classLoader, evaluator, writer);
         app.run();
+    }
+
+    private static Path defaultConfigPath() throws URISyntaxException {
+        return Path.of(Objects.requireNonNull(Main.class.getClassLoader().getResource(DEFAULT_POLICY_CONFIG_FILE)).toURI());
     }
 
 
