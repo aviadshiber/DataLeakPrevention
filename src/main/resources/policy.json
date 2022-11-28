@@ -1,0 +1,19 @@
+{
+  "policy_rules": [
+    {
+      "name":"RuleIBAN",
+      "conditions" : ["IBANCondition"],
+      "actions": ["PrintToScreen"]
+    },
+    {
+      "name":"SSNCounter",
+      "conditions" : ["ConditionSSN"],
+      "actions": ["CallCounter"]
+    },
+    {
+      "name":"CreditCard",
+      "conditions" : ["ConditionVisa","ConditionMasterCard"],
+      "actions": ["CallCounter","PrintToScreen"]
+    }
+  ]
+}
