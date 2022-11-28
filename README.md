@@ -1,12 +1,12 @@
 # Rules evaluator
 
-Your mission if you choose to accept it, will be to write a rules evaluator to identify common patterns,
+Your mission if you choose to accept it, will be to write a rules evaluator to identify common patterns,  
 also known as DLP
 
 ## Requirements
-Each rule should have conditions and actions, the condition defines what should be evaluated and the action defines
-what to do if the condition is met.
-Any rule must have 1 or more condition/action, each condition will have a matching action 
+Each rule should have conditions and actions, the condition defines what should be evaluated and the action defines  
+what to do if the condition is met.  
+Any rule must have 1 or more condition/action, each condition will have a matching action
 
 * Use a logger so we can follow the logic
 * Consider error handling
@@ -16,18 +16,18 @@ Any rule must have 1 or more condition/action, each condition will have a matchi
 
 ### Condition explained
 There should 2 type of conditions
-1. Simple - textual match, as in the example
-SSN has certain validations, the condition should define them and the action should report if they match
+1. Simple - textual match, as in the example  
+   SSN has certain validations, the condition should define them and the action should report if they match
 2. Complex (This is optional) - evaluate an expression such as is number max length 10 digits ("len < 11")
 
 ### Action
-An action should be able to run any given code which is predefined in the rule and return true/false if the rule has a match
+An action should be able to run any given code which is predefined in the rule if the rule has a match  (make a side effect)
 
 ### Accept as input new rules
 You may read rules from a file in any format that you prefer (e.g.: json, xml ..), please provide 3 examples
 
 ### Accept data as input
-Accept as input a given block of text which is fetched only in runtime by the program from the internet
+Accept as input a given block of text which is fetched only in runtime by the program from the internet  
 (as input accept a url)
 
 ### Report
@@ -40,3 +40,6 @@ Write a report containing all the matches found by the rules
 * Output to a file a report of the rules evaluation
 
 ## Good luck
+
+# Solution Design:
+![design description](docs/design.JPG)
