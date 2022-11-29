@@ -39,9 +39,10 @@ public class Main {
         //init all resources needed
         val dataTempPath = Files.createTempFile(null, "_downloaded_data");
         val dataTempFile = dataTempPath.toFile();
+        dataTempFile.deleteOnExit();
         val configReader = FileHelper.readFile(configFilePath);
 
-        //val dataPath = Path.of(Objects.requireNonNull(Main.class.getClassLoader().getResource(FILE_TO_SCAN)).toURI());
+
         downloadFile(urlToDownload, dataTempFile);
         @Cleanup val dataReader = FileHelper.readFile(dataTempPath);
 
