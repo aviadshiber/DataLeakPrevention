@@ -49,8 +49,8 @@ public class DataLossPreventionApp implements Runnable {
 
     @Override
     public void run() {
-
-        dataReader.lines().forEach(line -> {
+        long start = System.currentTimeMillis();
+        dataReader.lines().parallel().forEach(line -> {
             rules.forEach(rule -> {
                 try {
                     evaluator.evaluate(rule, line, writer);
@@ -59,5 +59,7 @@ public class DataLossPreventionApp implements Runnable {
                 }
             });
         });
+        long totalTime = System.currentTimeMillis() - start;
+        log.info("total time: {} milliseconds",totalTime);
     }
 }
