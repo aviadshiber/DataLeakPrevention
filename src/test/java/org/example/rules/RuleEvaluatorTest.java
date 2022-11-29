@@ -5,16 +5,13 @@ import lombok.val;
 import org.example.apis.Rule;
 import org.example.apis.RuleAction;
 import org.example.apis.RuleCondition;
-import org.example.rules.utils.NullWriter;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.io.Writer;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class RuleEvaluatorTest {
 
@@ -42,7 +39,7 @@ public class RuleEvaluatorTest {
                 return List.of(s -> s.length() % 2 == 0);
             }
         };
-        val writer = new NullWriter();
+        val writer = Writer.nullWriter();
         ruleEvaluator.evaluate(mockRule,"0000",writer);
         ruleEvaluator.evaluate(mockRule,"0",writer);
 
