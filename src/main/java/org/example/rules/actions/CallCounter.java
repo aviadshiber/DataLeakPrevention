@@ -12,7 +12,10 @@ public class CallCounter implements RuleAction {
 
     @Override
     public void accept(String s) {
-        counter.incrementAndGet();
+        if(counter.incrementAndGet()>=100){
+            System.out.println("------------THRESHOLD REACHED SENDING ALERT!!!---------------");
+            counter.set(0);
+        }
     }
 
     public int count(){
