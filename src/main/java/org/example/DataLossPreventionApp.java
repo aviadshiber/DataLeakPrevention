@@ -50,7 +50,7 @@ public class DataLossPreventionApp implements Runnable {
     @Override
     public void run() {
         long start = System.currentTimeMillis();
-        dataReader.lines().parallel().forEach(line -> {
+        dataReader.lines().forEach(line -> {
             rules.forEach(rule -> {
                 try {
                     evaluator.evaluate(rule, line, writer);
