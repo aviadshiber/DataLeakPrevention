@@ -50,4 +50,4 @@ Write a report containing all the matches found by the rules
 - The configuration of the policy is located at the resources' folder, but can also be loaded via cli command with -cr option, the url can be adjusted with -u option.
 - The Data from the web is streamed to disk, then is streamed back as lines to the DLP app and analyzed by the RulesEvaluator (this can be optimized but decided to keep it that way).
 - The solution was not packaged, I think I invested enough time as it is.
-- 
+- lines can also be read in parallel, currently the solution only compute the evaluation in parallel
