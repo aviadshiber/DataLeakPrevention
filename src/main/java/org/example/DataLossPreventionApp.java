@@ -24,7 +24,8 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class DataLossPreventionApp implements Runnable {
-    private final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    private final int availableProcessors;
+    private final ExecutorService executor;
     private final List<Rule> rules;
     private final RuleEvaluator evaluator;
     private final BufferedReader dataReader;
@@ -38,11 +39,14 @@ public class DataLossPreventionApp implements Runnable {
             RuleEvaluator evaluator,
             Writer writer
     ) {
-        val loadedRules = classLoader.load(readRules(configReader, ruleReader));
-        rules = new ArrayList<>(loadedRules);
+        availableProcessors = Runtime.getRuntime().availableProcessors();
+        executor = Executors.newFixedThreadPool(availableProcessors);
         this.dataReader = dataReader;
         this.evaluator = evaluator;
         this.writer = writer;
+
+        val loadedRules = classLoader.load(readRules(configReader, ruleReader));
+        rules = new ArrayList<>(loadedRules);
     }
 
     @SneakyThrows
@@ -71,8 +75,8 @@ public class DataLossPreventionApp implements Runnable {
                 });
             });
         }
-        executor.awaitTermination(10,TimeUnit.MINUTES);
+        executor.awaitTermination(10, TimeUnit.MINUTES);
         long totalTime = System.currentTimeMillis() - start;
-        log.info("total time: {} milliseconds",totalTime);
+        log.info("total time: {} milliseconds", totalTime);
     }
 }
