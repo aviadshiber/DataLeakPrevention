@@ -16,10 +16,15 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 
 @Slf4j
 public class DataLossPreventionApp implements Runnable {
+    private final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     private final List<Rule> rules;
     private final RuleEvaluator evaluator;
     private final BufferedReader dataReader;
@@ -48,17 +53,25 @@ public class DataLossPreventionApp implements Runnable {
     }
 
     @Override
+    @SneakyThrows
     public void run() {
         long start = System.currentTimeMillis();
-        dataReader.lines().forEach(line -> {
-            rules.forEach(rule -> {
-                try {
-                    evaluator.evaluate(rule, line, writer);
-                } catch (IOException e) {
-                    log.error(e.toString());
-                }
+        {
+            @Cleanup val stream = dataReader.lines().onClose(executor::shutdown);
+            stream.forEach(line -> {
+                rules.forEach(rule -> {
+                    CompletableFuture.runAsync(() -> {
+                        try {
+                            evaluator.evaluate(rule, line, writer);
+                        } catch (IOException e) {
+                            log.error(e.toString());
+                            executor.shutdown();
+                        }
+                    }, executor);
+                });
             });
-        });
+        }
+        executor.awaitTermination(10,TimeUnit.MINUTES);
         long totalTime = System.currentTimeMillis() - start;
         log.info("total time: {} milliseconds",totalTime);
     }
