@@ -21,20 +21,15 @@ public class RulesImplLoader implements RulesClassLoader {
     public List<Rule> load(Rules rules) {
         log.info("starting to load all rules classes");
         return rules.getRules().stream().map(ruleEntity -> {
-            val conditions = loadConditionsClasses(ruleEntity);
-            val actions = loadActionsClasses(ruleEntity);
+            val conditions = loadClassesGivenRuleEntity(ruleEntity, conditionsPackage, RuleCondition.class);
+            val actions = loadClassesGivenRuleEntity(ruleEntity, actionsPackage, RuleAction.class);
             return new RuleContainer(ruleEntity.getName(), conditions, actions);
         }).collect(Collectors.toList());
     }
 
-    private static List<RuleAction> loadActionsClasses(RuleEntity ruleEntity) {
+    private static <OUT> List<OUT> loadClassesGivenRuleEntity(RuleEntity ruleEntity, String packagePath, Class<OUT> protocol){
         log.info("loading action classes given {}",ruleEntity);
-        return loadClasses(ruleEntity.getActions(), actionsPackage, RuleAction.class);
-    }
-
-    private static List<RuleCondition> loadConditionsClasses(RuleEntity ruleEntity) {
-        log.info("loading conditions classes given {}",ruleEntity);
-        return loadClasses(ruleEntity.getConditions(), conditionsPackage, RuleCondition.class);
+        return loadClasses(ruleEntity.getActions(), packagePath, protocol);
     }
 
 }
