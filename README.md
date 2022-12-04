@@ -43,3 +43,11 @@ Write a report containing all the matches found by the rules
 
 # Solution Design:
 ![design description](docs/design.JPG)
+
+## Notes
+- actions and conditions are loaded by runtime with reflections (no framework was needed here, DI is simulated with simple configurations on Main class).
+- The solution is highly testable , and was tested on important logic, with no IO envloved.
+- The configuration of the policy is located at the resources' folder, but can also be loaded via cli command with -cr option, the url can be adjusted with -u option.
+- The Data from the web is streamed to disk, then is streamed back as lines to the DLP app and analyzed by the RulesEvaluator (this can be optimized but decided to keep it that way).
+- The solution was not packaged, I think I invested enough time as it is.
+- 
